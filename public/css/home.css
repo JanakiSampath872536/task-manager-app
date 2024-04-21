@@ -1,0 +1,68 @@
+body {
+    font-family: 'Nunito', sans-serif;
+    margin: 0;
+  }
+  
+  .navbar {
+    background-color: #d279d2;
+    color: #fff;
+    padding: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .nav-links a {
+    color: #fff;
+    text-decoration: none;
+    margin: 0 15px;
+  }
+  
+  .content-container {
+    padding: 20px;
+    box-sizing: border-box;
+  }
+  
+  .content-container h2 {
+    color: #333;
+  }
+  
+  .content-container p {
+    color: #555;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+  }
+
+  th, td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+  }
+
+  th {
+    background-color: #d279d2;
+    color: white;
+  }
+
+  button {
+    width: 100%;
+    padding: 10px;
+    border: none;
+    border-radius: 4px;
+    background-color: #cc99ff;
+    color: #fff;
+    cursor: pointer;
+    font-size: 16px;
+  }
+  
+  button:hover {
+    background-color: #444;
+  }
+
+  .delete-button {
+    background-color: #a64dff;
+    color: white;
+  }
