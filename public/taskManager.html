@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="css/home.css">
+  <title>Home Page</title>
+</head>
+<body>
+  <div class="navbar">
+    <div class="nav-links">
+      <a href="signup.html">Signup</a>
+      <a href="index.html">Login</a>
+    </div>
+  </div>
+  <div class="content-container">  
+    <h1>Task Management System</h1>
+
+    <div class="button-container">
+      <button onclick="addTask()">Add Task</button>      
+    </div>
+
+    <div class="form-container">
+      <table>
+        <thead>
+          <tr>
+            <th>Title</th>
+            <th>Description</th>
+            <th>Status</th>
+            <th>Date Created</th>       
+            <th></th>  
+          </tr>
+        </thead>
+        <tbody id="TableBody">
+          <!-- Task data will be inserted here dynamically -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", async (event) => {
+      // Initial display of tasks when the page loads
+      await displayTasks();
+    });
+
+    const addTask = async () => {
+      // Redirect to the addTask.html page
+      window.location.href = 'addTask.html';
+    };
+
+    const displayTasks = async () => {
+      const email = sessionStorage.getItem('currentUser');
+      const formData = { currentUser: email };
+
+      const res = await fetch('http://localhost:9000/getTasks', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+      });
+
+      const tasks = await res.json();
+      console.log(tasks);
+
+      renderTasks(tasks);
+    };
+
+    const deleteTask = async (id) => {
+      let json = {
+        id: id
+      };
+
+      console.log(json);
+      let code;
+
+      try {
+        const response = await fetch('http://localhost:9000/deleteTask', {
+          method: 'DELETE',
+          mode: 'cors',
+          cache: 'no-cache',
+          credentials: 'same-origin',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          referrerPolicy: 'no-referrer',
+          body: JSON.stringify(json),
+        });
+
+        code = response.status;
+
+        if (code === 200) {
+          alert('Task deleted Successfully');
+          window.location.reload();
+        } else {
+          const errorMessage = await response.json();
+          alert(errorMessage.message || 'Failed to delete task');
+        }
+      } catch (error) {
+        console.error('Error deleting task:', error);
+        alert('An error occurred while deleting the task. Please try again.');
+      }
+    };
+   
+    const renderTasks = (tasks) => {
+      // Rendering tasks in the table
+      const tableBody = document.getElementById('TableBody');
+      tableBody.innerHTML = '';
+
+      tasks.forEach(task => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td>${task.title}</td>
+          <td>${task.description}</td>
+          <td>${task.status}</td>
+          <td>${task.created_at}</td>
+          <td>
+            <button class="delete-button" onclick="deleteTask('${task._id}')">Delete</button>
+            <button class="update-button" onclick="updateTask('${task._id}', '${task.title}', '${task.description}', '${task.status}')">Update</button>
+          </td>
+        `;
+
+        tableBody.appendChild(row);
+      });
+    };
+
+    const updateTask = async (id, title, description, status) => {
+    // Redirect to the updateTask.html page with the task ID and other details as URL parameters
+    window.location.href = `updateTask.html?id=${id}&title=${encodeURIComponent(title)}&description=${encodeURIComponent(description)}&status=${encodeURIComponent(status)}`;
+  };
+
+  </script>
+</body>
+</html>

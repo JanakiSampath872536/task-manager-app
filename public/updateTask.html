@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="css/addtask.css">
+  <title>Update Task</title>
+</head>
+<body>
+
+  <form onsubmit="updateTask(event)">
+    <label for="title">Title:</label>
+    <input type="text" id="title" required>
+
+    <label for="description">Description:</label>
+    <input id="description">
+
+    <label for="status">Status:</label>
+    <input type="text" id="status">
+
+    <button type="submit">Update</button>
+    <button type="button" onclick="cancelEdit()">Cancel</button>
+  </form>
+  
+  <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const taskId = urlParams.get('id');
+
+    document.addEventListener("DOMContentLoaded", () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const id = urlParams.get('id');
+      const title = urlParams.get('title');
+      const description = urlParams.get('description');
+      const status = urlParams.get('status');
+
+      // Populate input fields with task details
+      document.getElementById('title').value = title;
+      document.getElementById('description').value = description;
+      document.getElementById('status').value = status;
+    });
+    
+    const updateTask = async (event) => {
+      event.preventDefault();
+
+      const title = document.getElementById('title').value;
+      const description = document.getElementById('description').value;
+      const status = document.getElementById('status').value;
+
+      let json = {
+        id: taskId,
+        title: title,
+        description: description,
+        status: status
+      };
+
+      try {
+        const response = await fetch('http://localhost:9000/updateTask', {
+          method: 'POST',
+          mode: 'cors',
+          cache: 'no-cache',
+          credentials: 'same-origin',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          referrerPolicy: 'no-referrer',
+          body: JSON.stringify(json),
+        });
+
+        if (response.ok) {
+          alert('Task Updated Successfully');
+          window.location.href = 'taskManager.html';
+        } else {
+          const errorMessage = await response.json();
+          alert(errorMessage.message || 'Failed to update task');
+        }
+      } catch (error) {
+        console.error('Error updating task:', error);
+        alert('An error occurred while updating the task. Please try again.');
+      }
+    };
+
+    function cancelEdit() {
+      window.location.href = 'taskManager.html'; 
+    }
+
+  </script>
+
+</body>
+</html>
